@@ -7,7 +7,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-4 z-50 px-4">
-      <nav className="page-wrap relative flex items-center justify-between gap-3 rounded-2xl border border-[rgba(188,86,145,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,0.76),rgba(255,244,251,0.66))] px-4 py-3 shadow-[0_16px_36px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.86)] backdrop-blur-xl sm:px-5">
+      <nav className="page-wrap relative flex items-center justify-between gap-3 rounded-2xl border border-[rgba(188,86,145,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] px-4 py-3 shadow-[0_16px_36px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl sm:px-5">
         <Link
           to="/"
           className="inline-flex items-center gap-2 rounded-full border border-[rgba(190,98,151,0.26)] bg-[rgba(247,191,224,0.24)] px-3 py-1.5 text-sm font-semibold tracking-tight text-[rgba(120,38,89,0.96)] no-underline"
@@ -87,7 +87,7 @@ export default function Header() {
 
         {isOpen ? (
           <div className="absolute inset-x-0 top-[calc(100%+0.6rem)] sm:hidden">
-            <div className="rounded-2xl border border-[rgba(188,86,145,0.22)] bg-[linear-gradient(165deg,rgba(255,255,255,0.86),rgba(255,244,251,0.8))] p-2 shadow-[0_14px_34px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.88)] backdrop-blur-xl">
+            <div className="rounded-2xl border border-[rgba(188,86,145,0.22)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] p-2 shadow-[0_14px_34px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl">
               {[
                 ['#home', 'Home'],
                 ['#about', 'About'],
