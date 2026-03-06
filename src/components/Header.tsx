@@ -7,10 +7,10 @@ export default function Header() {
 
   return (
     <header className="sticky top-4 z-50 px-4">
-      <nav className="page-wrap relative flex items-center justify-between gap-3 rounded-2xl border border-[rgba(188,86,145,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] px-4 py-3 shadow-[0_16px_36px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl sm:px-5">
+      <nav className="page-wrap relative flex items-center justify-between gap-3 rounded-2xl border border-[rgba(188,86,145,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] px-4 py-3 shadow-[0_16px_36px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl dark:border-[rgba(171,129,160,0.36)] dark:bg-[linear-gradient(165deg,rgba(26,24,35,0.98),rgba(22,19,32,0.98))] dark:shadow-[0_16px_36px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-5">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 rounded-full border border-[rgba(190,98,151,0.26)] bg-[rgba(247,191,224,0.24)] px-3 py-1.5 text-sm font-semibold tracking-tight text-[rgba(120,38,89,0.96)] no-underline"
+          className="inline-flex items-center gap-2 rounded-full border border-[rgba(190,98,151,0.26)] bg-[rgba(247,191,224,0.24)] px-3 py-1.5 text-sm font-semibold tracking-tight text-[rgba(120,38,89,0.96)] no-underline dark:border-[rgba(195,136,177,0.34)] dark:bg-[rgba(71,42,81,0.45)] dark:text-[rgba(241,205,233,0.95)]"
           onClick={() => setIsOpen(false)}
         >
           <span className="h-2 w-2 rounded-full bg-[linear-gradient(90deg,#f3a6d4,#d16eb2)]" />
@@ -35,7 +35,7 @@ export default function Header() {
         <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[rgba(188,86,145,0.3)] bg-[rgba(248,219,237,0.5)] text-[rgba(120,38,89,0.95)] transition hover:bg-[rgba(248,219,237,0.75)] sm:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[rgba(188,86,145,0.3)] bg-[rgba(248,219,237,0.5)] text-[rgba(120,38,89,0.95)] transition hover:bg-[rgba(248,219,237,0.75)] dark:border-[rgba(195,136,177,0.4)] dark:bg-[rgba(71,42,81,0.5)] dark:text-[rgba(241,205,233,0.95)] dark:hover:bg-[rgba(87,54,96,0.65)] sm:hidden"
             aria-label="Toggle navigation menu"
             aria-expanded={isOpen}
             onClick={() => setIsOpen((prev) => !prev)}
@@ -87,7 +87,7 @@ export default function Header() {
 
         {isOpen ? (
           <div className="absolute inset-x-0 top-[calc(100%+0.6rem)] sm:hidden">
-            <div className="rounded-2xl border border-[rgba(188,86,145,0.22)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] p-2 shadow-[0_14px_34px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl">
+            <div className="rounded-2xl border border-[rgba(188,86,145,0.22)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] p-2 shadow-[0_14px_34px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl dark:border-[rgba(171,129,160,0.36)] dark:bg-[linear-gradient(165deg,rgba(26,24,35,0.98),rgba(22,19,32,0.98))] dark:shadow-[0_14px_34px_rgba(0,0,0,0.46),inset_0_1px_0_rgba(255,255,255,0.05)]">
               {[
                 ['#home', 'Home'],
                 ['#about', 'About'],
@@ -97,7 +97,7 @@ export default function Header() {
                   key={href}
                   href={href}
                   onClick={() => setIsOpen(false)}
-                  className="block rounded-xl px-3 py-2 text-sm font-semibold text-[rgba(120,38,89,0.92)] no-underline transition hover:bg-[rgba(248,219,237,0.58)]"
+                  className="block rounded-xl px-3 py-2 text-sm font-semibold text-[rgba(120,38,89,0.92)] no-underline transition hover:bg-[rgba(248,219,237,0.58)] dark:text-[rgba(241,205,233,0.95)] dark:hover:bg-[rgba(87,54,96,0.6)]"
                 >
                   {label}
                 </a>

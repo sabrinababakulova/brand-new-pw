@@ -51,7 +51,7 @@ function App() {
             href="https://t.me/toCandyStore"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(41,95,108,0.25)] bg-white/70 px-5 py-2.5 text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(184,75,141,0.45)]"
+            className="rounded-full border border-[rgba(41,95,108,0.25)] bg-white/70 px-5 py-2.5 text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(184,75,141,0.45)] dark:border-[rgba(195,136,177,0.4)] dark:bg-[rgba(63,44,72,0.86)] dark:text-[rgba(241,205,233,0.95)]"
           >
             Telegram Channel
           </a>
