@@ -19,7 +19,7 @@ const traits = [
 
 function App() {
   return (
-    <main className="page-wrap px-4 pb-10 pt-14 sm:pt-16">
+    <main id="home" className="page-wrap px-4 pb-10 pt-10 sm:pt-12">
       <section className="island-shell rise-in relative overflow-hidden rounded-[2.2rem] border-[rgba(211,113,166,0.28)] px-6 py-10 sm:px-10 sm:py-14">
         <div className="pointer-events-none absolute -left-16 -top-16 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(246,174,222,0.42),transparent_68%)]" />
         <div className="pointer-events-none absolute -right-20 top-20 h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(224,116,183,0.22),transparent_70%)]" />
@@ -58,7 +58,7 @@ function App() {
         </div>
       </section>
 
-      <section className="mt-6 grid gap-4 sm:grid-cols-3">
+      <section id="about" className="mt-6 grid gap-4 sm:grid-cols-3">
         {traits.map((trait, index) => (
           <article
             key={trait.label}
@@ -75,7 +75,7 @@ function App() {
         ))}
       </section>
 
-      <section className="island-shell mt-6 rounded-2xl border-[rgba(190,98,151,0.24)] p-6 sm:p-8">
+      <section id="signature" className="island-shell mt-6 rounded-2xl border-[rgba(190,98,151,0.24)] p-6 sm:p-8">
         <p className="text-xs font-bold tracking-[0.14em] text-[rgba(155,55,112,0.9)] uppercase">
           Signature
         </p>
