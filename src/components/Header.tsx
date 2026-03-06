@@ -1,14 +1,18 @@
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import BetterAuthHeader from '../integrations/better-auth/header-user.tsx'
 import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <header className="sticky top-4 z-50 px-4">
-      <nav className="page-wrap flex items-center justify-between gap-3 rounded-2xl border border-[rgba(188,86,145,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,0.76),rgba(255,244,251,0.66))] px-4 py-3 shadow-[0_16px_36px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.86)] backdrop-blur-xl sm:px-5">
+      <nav className="page-wrap relative flex items-center justify-between gap-3 rounded-2xl border border-[rgba(188,86,145,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,0.76),rgba(255,244,251,0.66))] px-4 py-3 shadow-[0_16px_36px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.86)] backdrop-blur-xl sm:px-5">
         <Link
           to="/"
           className="inline-flex items-center gap-2 rounded-full border border-[rgba(190,98,151,0.26)] bg-[rgba(247,191,224,0.24)] px-3 py-1.5 text-sm font-semibold tracking-tight text-[rgba(120,38,89,0.96)] no-underline"
+          onClick={() => setIsOpen(false)}
         >
           <span className="h-2 w-2 rounded-full bg-[linear-gradient(90deg,#f3a6d4,#d16eb2)]" />
           Sabrina
@@ -30,6 +34,27 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[rgba(188,86,145,0.3)] bg-[rgba(248,219,237,0.5)] text-[rgba(120,38,89,0.95)] transition hover:bg-[rgba(248,219,237,0.75)] sm:hidden"
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
+            onClick={() => setIsOpen((prev) => !prev)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+              {isOpen ? (
+                <path
+                  fill="currentColor"
+                  d="M18.3 5.71 12 12l6.3 6.29-1.41 1.41L10.59 13.4 4.29 19.7 2.88 18.29 9.17 12 2.88 5.71 4.29 4.3l6.3 6.3 6.29-6.3z"
+                />
+              ) : (
+                <path
+                  fill="currentColor"
+                  d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75m0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12m0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75"
+                />
+              )}
+            </svg>
+          </button>
           <a
             href="https://github.com/sabrinababakulova"
             target="_blank"
@@ -61,6 +86,27 @@ export default function Header() {
           <BetterAuthHeader />
           <ThemeToggle />
         </div>
+
+        {isOpen ? (
+          <div className="absolute inset-x-0 top-[calc(100%+0.6rem)] sm:hidden">
+            <div className="rounded-2xl border border-[rgba(188,86,145,0.22)] bg-[linear-gradient(165deg,rgba(255,255,255,0.86),rgba(255,244,251,0.8))] p-2 shadow-[0_14px_34px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.88)] backdrop-blur-xl">
+              {[
+                ['#home', 'Home'],
+                ['#about', 'About'],
+                ['#signature', 'Signature'],
+              ].map(([href, label]) => (
+                <a
+                  key={href}
+                  href={href}
+                  onClick={() => setIsOpen(false)}
+                  className="block rounded-xl px-3 py-2 text-sm font-semibold text-[rgba(120,38,89,0.92)] no-underline transition hover:bg-[rgba(248,219,237,0.58)]"
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </nav>
     </header>
   )
