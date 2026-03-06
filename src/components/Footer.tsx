@@ -1,43 +1,69 @@
+import { useEffect, useState } from 'react'
+
+type NowPlaying = {
+  title: string
+  artist: string
+  songUrl: string
+  isPlaying: boolean
+}
+
 export default function Footer() {
   const year = new Date().getFullYear()
+  const [track, setTrack] = useState<NowPlaying | null>(null)
+
+  useEffect(() => {
+    let active = true
+
+    const load = async () => {
+      try {
+        const res = await fetch('/api/spotify-now-playing')
+        const data = (await res.json()) as { nowPlaying: NowPlaying | null }
+        if (active) {
+          setTrack(data.nowPlaying)
+        }
+      } catch {
+        if (active) {
+          setTrack(null)
+        }
+      }
+    }
+
+    void load()
+    const timer = window.setInterval(load, 60_000)
+
+    return () => {
+      active = false
+      window.clearInterval(timer)
+    }
+  }, [])
 
   return (
     <footer className="mt-20 border-t border-[var(--line)] px-4 pb-14 pt-10 text-[var(--sea-ink-soft)]">
       <div className="page-wrap flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-        <p className="m-0 text-sm">
-          &copy; {year} Your name here. All rights reserved.
-        </p>
-        <p className="island-kicker m-0">Built with TanStack Start</p>
+        <p className="m-0 text-sm">&copy; {year} SWE. All rights reserved.</p>
+        <p className="island-kicker m-0">Built with taste, code, and chaos</p>
       </div>
-      <div className="mt-4 flex justify-center gap-4">
-        <a
-          href="https://x.com/tan_stack"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)]"
-        >
-          <span className="sr-only">Follow TanStack on X</span>
-          <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32">
-            <path
-              fill="currentColor"
-              d="M12.6 1h2.2L10 6.48 15.64 15h-4.41L7.78 9.82 3.23 15H1l5.14-5.84L.72 1h4.52l3.12 4.73L12.6 1zm-.77 12.67h1.22L4.57 2.26H3.26l8.57 11.41z"
-            />
-          </svg>
-        </a>
-        <a
-          href="https://github.com/TanStack"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)]"
-        >
-          <span className="sr-only">Go to TanStack GitHub</span>
-          <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32">
-            <path
-              fill="currentColor"
-              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-            />
-          </svg>
-        </a>
+
+      <div className="page-wrap mt-4">
+        <div className="rounded-2xl border border-[rgba(188,86,145,0.2)] bg-[linear-gradient(165deg,rgba(255,255,255,0.92),rgba(255,244,251,0.86))] px-4 py-3 text-sm dark:border-[rgba(171,129,160,0.34)] dark:bg-[linear-gradient(165deg,rgba(26,24,35,0.96),rgba(22,19,32,0.96))]">
+          <span className="font-semibold text-[rgba(129,50,90,0.95)] dark:text-[rgba(241,205,233,0.95)]">
+            Now Playing:
+          </span>{' '}
+          {track?.isPlaying && track.songUrl ? (
+            <a
+              href={track.songUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[var(--sea-ink)] underline decoration-[rgba(188,86,145,0.4)] underline-offset-2 dark:text-[rgba(241,205,233,0.95)]"
+            >
+              {track.title} — {track.artist}
+            </a>
+          ) : (
+            <span className="text-[var(--sea-ink-soft)] dark:text-[rgba(214,193,222,0.86)]">
+              Not playing anything right now
+            </span>
+          )}
+        </div>
       </div>
     </footer>
   )
