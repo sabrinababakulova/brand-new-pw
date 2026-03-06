@@ -2,85 +2,87 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({ component: App })
 
+const traits = [
+  {
+    label: 'Builder-first',
+    copy: 'I prototype quickly, ship early, and iterate in public.',
+  },
+  {
+    label: 'AI × Product',
+    copy: 'I build practical AI workflows that feel human and useful.',
+  },
+  {
+    label: 'Infra confidence',
+    copy: 'I can spin up servers, automate systems, and keep momentum.',
+  },
+]
+
 function App() {
   return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-        <p className="island-kicker mb-3">TanStack Start Base Template</p>
-        <h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-          Start simple, ship quickly.
+    <main className="page-wrap px-4 pb-10 pt-14 sm:pt-16">
+      <section className="island-shell rise-in relative overflow-hidden rounded-[2.2rem] border-[rgba(211,113,166,0.28)] px-6 py-10 sm:px-10 sm:py-14">
+        <div className="pointer-events-none absolute -left-16 -top-16 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(246,174,222,0.42),transparent_68%)]" />
+        <div className="pointer-events-none absolute -right-20 top-20 h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(224,116,183,0.22),transparent_70%)]" />
+        <div className="pointer-events-none absolute -bottom-12 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,190,221,0.2),transparent_70%)]" />
+
+        <p className="island-kicker mb-4 text-[rgba(129,50,90,0.9)]">Sabrina Babakulova</p>
+
+        <h1 className="display-title max-w-4xl text-5xl leading-[0.95] font-bold tracking-tight text-[var(--sea-ink)] sm:text-7xl">
+          I build cool
+          <span className="block text-[rgba(187,67,138,0.95)]">internet things.</span>
         </h1>
-        <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-          This base starter intentionally keeps things light: two routes, clean
-          structure, and the essentials you need to build from scratch.
+
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--sea-ink-soft)] sm:text-lg">
+          Indie hacker, designer-minded engineer, and unapologetically curious
+          creator. I ship products at startup speed across AI, UX, and
+          infrastructure.
         </p>
-        <div className="flex flex-wrap gap-3">
+
+        <div className="mt-8 flex flex-wrap gap-3 text-sm font-semibold">
           <a
-            href="/about"
-            className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-          >
-            About This Starter
-          </a>
-          <a
-            href="https://tanstack.com/router"
+            href="https://github.com/sabrinababakulova"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
+            className="rounded-full border border-[rgba(184,75,141,0.34)] bg-[rgba(243,166,212,0.2)] px-5 py-2.5 text-[rgba(126,39,92,1)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(243,166,212,0.32)]"
           >
-            Router Guide
+            GitHub
+          </a>
+          <a
+            href="https://t.me/toCandyStore"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full border border-[rgba(41,95,108,0.25)] bg-white/70 px-5 py-2.5 text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(184,75,141,0.45)]"
+          >
+            Telegram Channel
           </a>
         </div>
       </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
+      <section className="mt-6 grid gap-4 sm:grid-cols-3">
+        {traits.map((trait, index) => (
           <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
+            key={trait.label}
+            className="island-shell feature-card rise-in rounded-2xl border-[rgba(190,98,151,0.2)] p-5"
+            style={{ animationDelay: `${index * 100 + 80}ms` }}
           >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
+            <h2 className="text-sm font-extrabold tracking-[0.11em] text-[rgba(155,55,112,0.92)] uppercase">
+              {trait.label}
             </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--sea-ink-soft)]">
+              {trait.copy}
+            </p>
           </article>
         ))}
       </section>
 
-      <section className="island-shell mt-8 rounded-2xl p-6">
-        <p className="island-kicker mb-2">Quick Start</p>
-        <ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-          <li>
-            Edit <code>src/routes/index.tsx</code> to customize the home page.
-          </li>
-          <li>
-            Update <code>src/components/Header.tsx</code> and{' '}
-            <code>src/components/Footer.tsx</code> for brand links.
-          </li>
-          <li>
-            Add routes in <code>src/routes</code> and tweak visual tokens in{' '}
-            <code>src/styles.css</code>.
-          </li>
-        </ul>
+      <section className="island-shell mt-6 rounded-2xl border-[rgba(190,98,151,0.24)] p-6 sm:p-8">
+        <p className="text-xs font-bold tracking-[0.14em] text-[rgba(155,55,112,0.9)] uppercase">
+          Signature
+        </p>
+        <p className="mt-3 max-w-3xl text-lg leading-relaxed text-[var(--sea-ink)] sm:text-xl">
+          Bold but intentional. Minimal but expressive. Feminine without losing
+          edge.
+        </p>
       </section>
     </main>
   )
