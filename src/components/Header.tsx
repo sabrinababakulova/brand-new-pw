@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import BetterAuthHeader from '../integrations/better-auth/header-user.tsx'
 import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
@@ -15,7 +14,7 @@ export default function Header() {
           onClick={() => setIsOpen(false)}
         >
           <span className="h-2 w-2 rounded-full bg-[linear-gradient(90deg,#f3a6d4,#d16eb2)]" />
-          Sabrina
+          SWE
         </Link>
 
         <div className="hidden items-center gap-5 text-xs font-bold tracking-[0.12em] text-[rgba(120,38,89,0.82)] uppercase sm:flex">
@@ -83,7 +82,6 @@ export default function Header() {
               />
             </svg>
           </a>
-          <BetterAuthHeader />
           <ThemeToggle />
         </div>
 

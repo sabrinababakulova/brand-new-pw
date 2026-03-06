@@ -25,7 +25,7 @@ function App() {
         <div className="pointer-events-none absolute -right-20 top-20 h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(224,116,183,0.22),transparent_70%)]" />
         <div className="pointer-events-none absolute -bottom-12 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,190,221,0.2),transparent_70%)]" />
 
-        <p className="island-kicker mb-4 text-[rgba(129,50,90,0.9)]">Sabrina Babakulova</p>
+        <p className="island-kicker mb-4 text-[rgba(129,50,90,0.9)]">SWE</p>
 
         <h1 className="display-title max-w-4xl text-5xl leading-[0.95] font-bold tracking-tight text-[var(--sea-ink)] sm:text-7xl">
           I build cool
