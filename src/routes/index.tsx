@@ -28,7 +28,8 @@ function App() {
         <p className="island-kicker mb-4 text-[rgba(129,50,90,0.9)]">SWE</p>
 
         <h1 className="display-title max-w-4xl text-5xl leading-[0.95] font-bold tracking-tight text-[var(--sea-ink)] sm:text-7xl">
-          hello Navruza and Shakhlo
+          I build cool
+          <span className="block text-[rgba(187,67,138,0.95)]">internet things.</span>
         </h1>
 
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--sea-ink-soft)] sm:text-lg">
