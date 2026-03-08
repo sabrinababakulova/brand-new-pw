@@ -340,7 +340,7 @@ a {
 .floating-toolbar-wrap {
   position: fixed;
   left: 50%;
-  bottom: 1.3rem;
+  top: 1rem;
   transform: translateX(-50%);
   z-index: 60;
 }
