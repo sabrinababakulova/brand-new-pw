@@ -1,110 +1,137 @@
-import { Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import ThemeToggle from './ThemeToggle'
 
+type NavItem = {
+  key: string
+  label: string
+  href: string
+  icon: ReactNode
+}
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    key: 'home',
+    label: 'Home',
+    href: '#home',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="toolbar-icon">
+        <path d="M3 10.5 12 3l9 7.5" />
+        <path d="M6.75 9.75v10.5h10.5V9.75" />
+      </svg>
+    ),
+  },
+  {
+    key: 'search',
+    label: 'Search',
+    href: '#about',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="toolbar-icon">
+        <circle cx="11" cy="11" r="6.25" />
+        <path d="m16 16 4.25 4.25" />
+      </svg>
+    ),
+  },
+  {
+    key: 'user',
+    label: 'User',
+    href: '#signature',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="toolbar-icon">
+        <circle cx="12" cy="8" r="3.25" />
+        <path d="M5 20c1.35-3.2 4.05-4.8 7-4.8s5.65 1.6 7 4.8" />
+      </svg>
+    ),
+  },
+]
+
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [activeKey, setActiveKey] = useState<string>('home')
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const buttonRefs = useRef<Record<string, HTMLAnchorElement | null>>({})
+  const [indicator, setIndicator] = useState({ x: 0, width: 0 })
+
+  const activeIndex = useMemo(
+    () => Math.max(0, NAV_ITEMS.findIndex((item) => item.key === activeKey)),
+    [activeKey],
+  )
+
+  useEffect(() => {
+    function syncFromHash() {
+      const hash = window.location.hash
+      const found = NAV_ITEMS.find((item) => item.href === hash)
+      if (found) {
+        setActiveKey(found.key)
+      }
+    }
+
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const track = trackRef.current
+      const activeButton = buttonRefs.current[activeKey]
+      if (!track || !activeButton) return
+
+      const trackRect = track.getBoundingClientRect()
+      const buttonRect = activeButton.getBoundingClientRect()
+
+      setIndicator({
+        x: buttonRect.left - trackRect.left,
+        width: buttonRect.width,
+      })
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [activeKey])
 
   return (
-    <header className="sticky top-4 z-50 px-4">
-      <nav className="page-wrap relative flex items-center justify-between gap-3 rounded-2xl border border-[rgba(188,86,145,0.24)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] px-4 py-3 shadow-[0_16px_36px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl dark:border-[rgba(171,129,160,0.36)] dark:bg-[linear-gradient(165deg,rgba(26,24,35,0.98),rgba(22,19,32,0.98))] dark:shadow-[0_16px_36px_rgba(0,0,0,0.42),inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-5">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 rounded-full border border-[rgba(190,98,151,0.26)] bg-[rgba(247,191,224,0.24)] px-3 py-1.5 text-sm font-semibold tracking-tight text-[rgba(120,38,89,0.96)] no-underline dark:border-[rgba(195,136,177,0.34)] dark:bg-[rgba(71,42,81,0.45)] dark:text-[rgba(241,205,233,0.95)]"
-          onClick={() => setIsOpen(false)}
+    <header className="floating-toolbar-wrap">
+      <div className="floating-toolbar-glow" aria-hidden="true" />
+
+      <nav className="floating-toolbar" aria-label="Primary">
+        <div className="floating-toolbar-grain" aria-hidden="true" />
+
+        <div
+          ref={trackRef}
+          className="floating-toolbar-track"
+          style={
+            {
+              '--indicator-x': `${indicator.x}px`,
+              '--indicator-w': `${indicator.width}px`,
+            } as CSSProperties
+          }
         >
-          <span className="h-2 w-2 rounded-full bg-[linear-gradient(90deg,#f3a6d4,#d16eb2)]" />
-          SWE
-        </Link>
-
-        <div className="hidden items-center gap-5 text-xs font-bold tracking-[0.12em] text-[rgba(120,38,89,0.82)] uppercase sm:flex">
-          <a href="#home" className="no-underline transition hover:text-[rgba(120,38,89,1)]">
-            Home
-          </a>
-          <a href="#about" className="no-underline transition hover:text-[rgba(120,38,89,1)]">
-            About
-          </a>
-          <a
-            href="#signature"
-            className="no-underline transition hover:text-[rgba(120,38,89,1)]"
-          >
-            Signature
-          </a>
-        </div>
-
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[rgba(188,86,145,0.3)] bg-[rgba(248,219,237,0.5)] text-[rgba(120,38,89,0.95)] transition hover:bg-[rgba(248,219,237,0.75)] dark:border-[rgba(195,136,177,0.4)] dark:bg-[rgba(71,42,81,0.5)] dark:text-[rgba(241,205,233,0.95)] dark:hover:bg-[rgba(87,54,96,0.65)] sm:hidden"
-            aria-label="Toggle navigation menu"
-            aria-expanded={isOpen}
-            onClick={() => setIsOpen((prev) => !prev)}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
-              {isOpen ? (
-                <path
-                  fill="currentColor"
-                  d="M18.3 5.71 12 12l6.3 6.29-1.41 1.41L10.59 13.4 4.29 19.7 2.88 18.29 9.17 12 2.88 5.71 4.29 4.3l6.3 6.3 6.29-6.3z"
-                />
-              ) : (
-                <path
-                  fill="currentColor"
-                  d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75m0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12m0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75"
-                />
-              )}
-            </svg>
-          </button>
-          <a
-            href="https://github.com/sabrinababakulova"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[rgba(248,219,237,0.65)] hover:text-[var(--sea-ink)] sm:block"
-          >
-            <span className="sr-only">Go to Sabrina GitHub</span>
-            <svg viewBox="0 0 16 16" aria-hidden="true" width="20" height="20">
-              <path
-                fill="currentColor"
-                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
-              />
-            </svg>
-          </a>
-          <a
-            href="https://t.me/toCandyStore"
-            target="_blank"
-            rel="noreferrer"
-            className="hidden rounded-xl p-2 text-[var(--sea-ink-soft)] transition hover:bg-[rgba(248,219,237,0.65)] hover:text-[var(--sea-ink)] sm:block"
-          >
-            <span className="sr-only">Open Telegram channel</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
-              <path
-                fill="currentColor"
-                d="M9.78 18.65c-.37 0-.31-.14-.44-.5l-1.11-3.65 8.55-5.41c.4-.24.69-.11.39.16l-6.93 6.26-.27 3.14c.39 0 .56-.18.77-.39l1.86-1.81 3.86 2.85c.71.39 1.22.19 1.4-.66L20.8 4.5c.26-1.03-.39-1.5-1.06-1.2L2.68 9.86c-1.03.42-1.01.99-.18 1.25l4.38 1.37 10.13-6.39c.48-.29.91-.13.55.19"
-              />
-            </svg>
-          </a>
-          <ThemeToggle />
-        </div>
-
-        {isOpen ? (
-          <div className="absolute inset-x-0 top-[calc(100%+0.6rem)] sm:hidden">
-            <div className="rounded-2xl border border-[rgba(188,86,145,0.22)] bg-[linear-gradient(165deg,rgba(255,255,255,1),rgba(255,244,251,1))] p-2 shadow-[0_14px_34px_rgba(140,43,101,0.14),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-xl dark:border-[rgba(171,129,160,0.36)] dark:bg-[linear-gradient(165deg,rgba(26,24,35,0.98),rgba(22,19,32,0.98))] dark:shadow-[0_14px_34px_rgba(0,0,0,0.46),inset_0_1px_0_rgba(255,255,255,0.05)]">
-              {[
-                ['#home', 'Home'],
-                ['#about', 'About'],
-                ['#signature', 'Signature'],
-              ].map(([href, label]) => (
-                <a
-                  key={href}
-                  href={href}
-                  onClick={() => setIsOpen(false)}
-                  className="block rounded-xl px-3 py-2 text-sm font-semibold text-[rgba(120,38,89,0.92)] no-underline transition hover:bg-[rgba(248,219,237,0.58)] dark:text-[rgba(241,205,233,0.95)] dark:hover:bg-[rgba(87,54,96,0.6)]"
-                >
-                  {label}
-                </a>
-              ))}
+          <div className="gold-indicator" aria-hidden="true">
+            <div className="gold-indicator__glow" />
+            <div className="gold-indicator__clip">
+              <div className="gold-indicator__spin" />
             </div>
+            <div className="gold-indicator__inner" />
           </div>
-        ) : null}
+
+          {NAV_ITEMS.map((item, index) => (
+            <a
+              key={item.key}
+              ref={(el) => {
+                buttonRefs.current[item.key] = el
+              }}
+              href={item.href}
+              onClick={() => setActiveKey(item.key)}
+              className={`floating-toolbar-btn ${
+                activeIndex === index ? 'is-active' : ''
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </div>
+
+        <div className="floating-toolbar-divider" aria-hidden="true" />
+        <ThemeToggle className="floating-theme-toggle" />
       </nav>
     </header>
   )

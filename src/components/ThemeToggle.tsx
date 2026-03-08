@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 
 type ThemeMode = 'light' | 'dark'
 
+type ThemeToggleProps = {
+  className?: string
+}
+
 function getInitialMode(): ThemeMode {
   if (typeof window === 'undefined') {
     return 'light'
@@ -24,8 +28,9 @@ function applyThemeMode(mode: ThemeMode) {
   document.documentElement.style.colorScheme = mode
 }
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ className }: ThemeToggleProps) {
   const [mode, setMode] = useState<ThemeMode>('light')
+  const [isBouncing, setIsBouncing] = useState(false)
 
   useEffect(() => {
     const initialMode = getInitialMode()
@@ -38,6 +43,9 @@ export default function ThemeToggle() {
     setMode(nextMode)
     applyThemeMode(nextMode)
     window.localStorage.setItem('theme', nextMode)
+
+    setIsBouncing(true)
+    window.setTimeout(() => setIsBouncing(false), 360)
   }
 
   const isLight = mode === 'light'
@@ -51,9 +59,16 @@ export default function ThemeToggle() {
       onClick={toggleMode}
       aria-label={label}
       title={label}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[var(--chip-line)] bg-[var(--chip-bg)] text-[var(--sea-ink)] shadow-[0_8px_22px_rgba(30,90,72,0.08)] transition hover:-translate-y-0.5"
+      className={`theme-morph-toggle ${className ?? ''} ${
+        isBouncing ? 'is-bouncing' : ''
+      }`}
     >
-      <span aria-hidden="true">{isLight ? '☀️' : '🌙'}</span>
+      <span className={`theme-icon theme-icon--sun ${isLight ? 'is-on' : ''}`} aria-hidden="true">
+        ☀
+      </span>
+      <span className={`theme-icon theme-icon--moon ${isLight ? '' : 'is-on'}`} aria-hidden="true">
+        ☾
+      </span>
     </button>
   )
 }
