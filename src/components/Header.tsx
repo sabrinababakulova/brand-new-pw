@@ -21,8 +21,8 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    key: 'search',
-    label: 'Search',
+    key: 'resume',
+    label: 'Resume',
     href: '#about',
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="toolbar-icon">
@@ -32,8 +32,8 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    key: 'user',
-    label: 'User',
+    key: 'custom',
+    label: 'Custom',
     href: '#signature',
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="toolbar-icon">
