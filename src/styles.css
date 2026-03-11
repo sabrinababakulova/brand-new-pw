@@ -343,6 +343,7 @@ a {
   top: 1rem;
   transform: translateX(-50%);
   z-index: 60;
+  width: fit-content;
 }
 
 .floating-toolbar-glow {
@@ -368,6 +369,17 @@ a {
     0 20px 48px color-mix(in oklab, black 24%, transparent),
     inset 0 1px 0 color-mix(in oklab, white 68%, transparent);
   backdrop-filter: blur(18px) saturate(1.18);
+}
+
+@media (min-width: 1024px) {
+  .floating-toolbar-wrap {
+    width: min(1080px, calc(100% - 2rem));
+  }
+
+  .floating-toolbar {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .floating-toolbar-grain {
