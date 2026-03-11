@@ -26,8 +26,10 @@ const NAV_ITEMS: NavItem[] = [
     href: '#about',
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="toolbar-icon">
-        <circle cx="11" cy="11" r="6.25" />
-        <path d="m16 16 4.25 4.25" />
+        <path d="M7.5 3.75h6.75L18.75 8.25v12H7.5z" />
+        <path d="M14.25 3.75v4.5h4.5" />
+        <path d="M9.75 12h6" />
+        <path d="M9.75 15.75h4.5" />
       </svg>
     ),
   },
@@ -37,8 +39,15 @@ const NAV_ITEMS: NavItem[] = [
     href: '#signature',
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true" className="toolbar-icon">
-        <circle cx="12" cy="8" r="3.25" />
-        <path d="M5 20c1.35-3.2 4.05-4.8 7-4.8s5.65 1.6 7 4.8" />
+        <path d="M12 4.5v3" />
+        <path d="M12 16.5v3" />
+        <path d="m6.75 6.75 2.1 2.1" />
+        <path d="m15.15 15.15 2.1 2.1" />
+        <path d="M4.5 12h3" />
+        <path d="M16.5 12h3" />
+        <path d="m6.75 17.25 2.1-2.1" />
+        <path d="m15.15 8.85 2.1-2.1" />
+        <circle cx="12" cy="12" r="3" />
       </svg>
     ),
   },
