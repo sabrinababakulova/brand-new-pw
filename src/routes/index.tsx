@@ -1,84 +1,85 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute("/")({ component: HomePage })
 
-const traits = [
-  {
-    label: 'Builder-first',
-    copy: 'I prototype quickly, ship early, and iterate in public.',
-  },
-  {
-    label: 'AI × Product',
-    copy: 'I build practical AI workflows that feel human and useful.',
-  },
-  {
-    label: 'Infra confidence',
-    copy: 'I can spin up servers, automate systems, and keep momentum.',
-  },
+const pillars = [
+	{
+		title: "Product Engineering",
+		description:
+			"From concept to shipped feature with clear architecture, measurable outcomes, and clean execution.",
+	},
+	{
+		title: "Applied AI",
+		description:
+			"Designing practical AI experiences that improve workflows instead of adding noise.",
+	},
+	{
+		title: "Infrastructure",
+		description:
+			"Reliable deployment, automation, and observability for production-ready systems.",
+	},
 ]
 
-function App() {
-  return (
-    <main id="home" className="page-wrap px-4 pb-10 pt-10 sm:pt-12">
-      <section className="site-panel rise-in relative overflow-hidden px-6 py-10 sm:px-10 sm:py-14">
-        <div className="ambient-orb ambient-orb--a" />
-        <div className="ambient-orb ambient-orb--b" />
+const highlights = [
+	{ label: "Projects shipped", value: "24+" },
+	{ label: "Years building", value: "6" },
+	{ label: "Focus", value: "AI × Web" },
+]
 
-        <p className="site-kicker mb-4">SWE</p>
+function HomePage() {
+	return (
+		<main className="page-wrap homepage">
+			<section className="hero-block" id="home">
+				<p className="site-kicker">Software Engineer</p>
+				<h1 className="hero-title">Minimal systems. Clear execution. Real outcomes.</h1>
+				<p className="hero-copy">
+					I build professional digital products with a strict, modern design language and
+					production-grade engineering behind every detail.
+				</p>
+				<div className="hero-actions">
+					<a className="btn-primary" href="#contact">
+						Book a call
+					</a>
+					<a className="btn-secondary" href="https://t.me/toCandyStore" target="_blank" rel="noreferrer">
+						Telegram
+					</a>
+				</div>
+			</section>
 
-        <h1 className="display-title max-w-4xl text-5xl leading-[0.95] font-bold tracking-tight text-[var(--site-ink)] sm:text-7xl">
-          I build cool
-          <span className="block text-[var(--site-gold-soft)]">internet things.</span>
-        </h1>
+			<section className="stats-grid" aria-label="Highlights">
+				{highlights.map((item) => (
+					<article key={item.label} className="stat-card">
+						<p className="stat-value">{item.value}</p>
+						<p className="stat-label">{item.label}</p>
+					</article>
+				))}
+			</section>
 
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--site-ink-soft)] sm:text-lg">
-          Indie hacker, designer-minded engineer, and unapologetically curious creator. I
-          ship products at startup speed across AI, UX, and infrastructure.
-        </p>
+			<section id="work" className="section-block">
+				<div className="section-head">
+					<p className="site-kicker">Capabilities</p>
+					<h2 className="section-title">What I deliver</h2>
+				</div>
+				<div className="capability-grid">
+					{pillars.map((pillar) => (
+						<article key={pillar.title} className="capability-card">
+							<h3>{pillar.title}</h3>
+							<p>{pillar.description}</p>
+						</article>
+					))}
+				</div>
+			</section>
 
-        <div className="mt-8 flex flex-wrap gap-3 text-sm font-semibold">
-          <a
-            href="https://github.com/sabrinababakulova"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-gold"
-          >
-            GitHub
-          </a>
-          <a
-            href="https://t.me/toCandyStore"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-glass"
-          >
-            Telegram Channel
-          </a>
-        </div>
-      </section>
-
-      <section id="about" className="mt-6 grid gap-4 sm:grid-cols-3">
-        {traits.map((trait, index) => (
-          <article
-            key={trait.label}
-            className="site-card rise-in p-5"
-            style={{ animationDelay: `${index * 100 + 80}ms` }}
-          >
-            <h2 className="text-sm font-extrabold tracking-[0.11em] text-[var(--site-gold-soft)] uppercase">
-              {trait.label}
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[var(--site-ink-soft)]">{trait.copy}</p>
-          </article>
-        ))}
-      </section>
-
-      <section id="signature" className="site-card mt-6 p-6 sm:p-8">
-        <p className="text-xs font-bold tracking-[0.14em] text-[var(--site-gold)] uppercase">
-          Signature
-        </p>
-        <p className="mt-3 max-w-3xl text-lg leading-relaxed text-[var(--site-ink)] sm:text-xl">
-          Bold but intentional. Minimal but expressive. Feminine without losing edge.
-        </p>
-      </section>
-    </main>
-  )
+			<section id="contact" className="section-block cta-block">
+				<p className="site-kicker">Contact</p>
+				<h2 className="section-title">Let’s build something serious.</h2>
+				<p className="hero-copy">
+					If you need clean design, strong engineering, and fast delivery, let’s talk.
+				</p>
+				<a href="mailto:hello@sabrina.dev" className="btn-primary">
+					hello@sabrina.dev
+				</a>
+			</section>
+		</main>
+	)
 }
