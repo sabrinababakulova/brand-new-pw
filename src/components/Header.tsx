@@ -10,9 +10,10 @@ export default function Header() {
 
 				<nav className="nav-links" aria-label="Primary navigation">
 					<a href="/">Home</a>
-					<a href="#work">Work</a>
+					<a href="#projects">Projects</a>
+					<a href="#experience">Experience</a>
+					<a href="#interests">Interests</a>
 					<a href="#contact">Contact</a>
-					<a href="/about">About</a>
 				</nav>
 
 				<div className="header-actions">

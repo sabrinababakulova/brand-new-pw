@@ -35,8 +35,22 @@ export default function Footer() {
 	return (
 		<footer className="site-footer">
 			<div className="page-wrap footer-inner">
-				<p>© {year} Sabrina. All rights reserved.</p>
-				<p>
+				<div className="footer-col">
+					<p>© {year} Sabrina Babakulova. All rights reserved.</p>
+					<p>Tashkent, Uzbekistan</p>
+				</div>
+				<div className="footer-col footer-links">
+					<a href="https://github.com/sabrinababakulova" target="_blank" rel="noreferrer">
+						GitHub
+					</a>
+					<a href="https://www.linkedin.com/in/sb0304/" target="_blank" rel="noreferrer">
+						LinkedIn
+					</a>
+					<a href="https://t.me/toCandyStore" target="_blank" rel="noreferrer">
+						Telegram
+					</a>
+				</div>
+				<p className="footer-track">
 					{track?.isPlaying && track.songUrl ? (
 						<>
 							Now playing: <a href={track.songUrl}>{track.title} — {track.artist}</a>
