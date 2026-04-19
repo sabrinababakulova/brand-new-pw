@@ -1,8 +1,9 @@
 import ThemeToggle from "./ThemeToggle"
+import type { CSSProperties } from "react"
 
 export default function Header() {
 	return (
-		<header className="site-header">
+		<header className="site-header reveal" style={{ "--reveal-delay": "40ms" } as CSSProperties}>
 			<div className="page-wrap header-inner">
 				<a href="/" className="site-logo" aria-label="Go to homepage">
 					Sabrina

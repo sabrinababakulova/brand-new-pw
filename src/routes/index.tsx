@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import type { CSSProperties } from "react"
 
 export const Route = createFileRoute("/")({ component: HomePage })
 
@@ -30,8 +31,7 @@ const projects = [
 	},
 	{
 		title: "md-to-pdf-transformer",
-		description:
-			"A Go utility that transforms Markdown files into PDF output.",
+		description: "A Go utility that transforms Markdown files into PDF output.",
 		link: "https://github.com/sabrinababakulova/md-to-pdf-transformer",
 	},
 	{
@@ -78,7 +78,7 @@ const interests = [
 function HomePage() {
 	return (
 		<main className="page-wrap homepage">
-			<section className="hero-block" id="home">
+			<section className="hero-block reveal soft-float" style={{ "--reveal-delay": "50ms" } as CSSProperties} id="home">
 				<p className="site-kicker">Sabrina Babakulova · Fullstack Engineer</p>
 				<h1 className="hero-title">I build reliable software products with strict execution.</h1>
 				<p className="hero-copy">
@@ -99,29 +99,37 @@ function HomePage() {
 			</section>
 
 			<section className="stats-grid" aria-label="Highlights">
-				{highlights.map((item) => (
-					<article key={item.label} className="stat-card">
+				{highlights.map((item, index) => (
+					<article
+						key={item.label}
+						className="stat-card reveal"
+						style={{ "--reveal-delay": `${index * 100 + 180}ms` } as CSSProperties}
+					>
 						<p className="stat-value">{item.value}</p>
 						<p className="stat-label">{item.label}</p>
 					</article>
 				))}
 			</section>
 
-			<section id="skills" className="section-block">
+			<section id="skills" className="section-block reveal" style={{ "--reveal-delay": "220ms" } as CSSProperties}>
 				<div className="section-head">
 					<p className="site-kicker">Skills</p>
 					<h2 className="section-title">Technology stack</h2>
 				</div>
 				<div className="chips-grid" aria-label="Skills list">
-					{skills.map((skill) => (
-						<span className="skill-chip" key={skill}>
+					{skills.map((skill, index) => (
+						<span
+							className="skill-chip reveal"
+							style={{ "--reveal-delay": `${index * 45 + 280}ms` } as CSSProperties}
+							key={skill}
+						>
 							{skill}
 						</span>
 					))}
 				</div>
 			</section>
 
-			<section id="projects" className="section-block" aria-labelledby="projects-title">
+			<section id="projects" className="section-block reveal" style={{ "--reveal-delay": "290ms" } as CSSProperties} aria-labelledby="projects-title">
 				<div className="section-head">
 					<p className="site-kicker">Projects</p>
 					<h2 className="section-title" id="projects-title">
@@ -129,8 +137,12 @@ function HomePage() {
 					</h2>
 				</div>
 				<div className="capability-grid">
-					{projects.map((project) => (
-						<article key={project.title} className="capability-card">
+					{projects.map((project, index) => (
+						<article
+							key={project.title}
+							className="capability-card reveal"
+							style={{ "--reveal-delay": `${index * 110 + 340}ms` } as CSSProperties}
+						>
 							<h3>{project.title}</h3>
 							<p>{project.description}</p>
 							<a href={project.link} target="_blank" rel="noreferrer" className="card-link">
@@ -141,7 +153,7 @@ function HomePage() {
 				</div>
 			</section>
 
-			<section id="experience" className="section-block" aria-labelledby="experience-title">
+			<section id="experience" className="section-block reveal" style={{ "--reveal-delay": "360ms" } as CSSProperties} aria-labelledby="experience-title">
 				<div className="section-head">
 					<p className="site-kicker">Experience</p>
 					<h2 className="section-title" id="experience-title">
@@ -149,8 +161,12 @@ function HomePage() {
 					</h2>
 				</div>
 				<div className="timeline-list">
-					{experience.map((item) => (
-						<article className="timeline-item" key={`${item.company}-${item.period}`}>
+					{experience.map((item, index) => (
+						<article
+							className="timeline-item reveal"
+							style={{ "--reveal-delay": `${index * 110 + 420}ms` } as CSSProperties}
+							key={`${item.company}-${item.period}`}
+						>
 							<div>
 								<h3>{item.role}</h3>
 								<p className="timeline-meta">{item.company}</p>
@@ -162,7 +178,7 @@ function HomePage() {
 				</div>
 			</section>
 
-			<section id="interests" className="section-block" aria-labelledby="interests-title">
+			<section id="interests" className="section-block reveal" style={{ "--reveal-delay": "440ms" } as CSSProperties} aria-labelledby="interests-title">
 				<div className="section-head">
 					<p className="site-kicker">Hobbies & Interests</p>
 					<h2 className="section-title" id="interests-title">
@@ -170,13 +186,19 @@ function HomePage() {
 					</h2>
 				</div>
 				<ul className="interest-list">
-					{interests.map((interest) => (
-						<li key={interest}>{interest}</li>
+					{interests.map((interest, index) => (
+						<li
+							className="reveal"
+							style={{ "--reveal-delay": `${index * 70 + 510}ms` } as CSSProperties}
+							key={interest}
+						>
+							{interest}
+						</li>
 					))}
 				</ul>
 			</section>
 
-			<section id="contact" className="section-block cta-block">
+			<section id="contact" className="section-block cta-block reveal" style={{ "--reveal-delay": "590ms" } as CSSProperties}>
 				<p className="site-kicker">Contact</p>
 				<h2 className="section-title">Open to product and engineering collaborations.</h2>
 				<p className="hero-copy">Email, LinkedIn, GitHub, and Telegram are all available.</p>

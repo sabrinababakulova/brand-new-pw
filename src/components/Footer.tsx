@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import type { CSSProperties } from "react"
 
 type NowPlaying = {
 	title: string
@@ -33,7 +34,7 @@ export default function Footer() {
 	}, [])
 
 	return (
-		<footer className="site-footer">
+		<footer className="site-footer reveal" style={{ "--reveal-delay": "720ms" } as CSSProperties}>
 			<div className="page-wrap footer-inner">
 				<div className="footer-col">
 					<p>© {year} Sabrina Babakulova. All rights reserved.</p>
