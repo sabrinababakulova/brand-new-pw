@@ -1,96 +1,129 @@
-import { useEffect, useMemo, useState } from "react"
+import { Monitor, Moon, Sun } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Button } from "#/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "#/components/ui/dropdown-menu";
+import { cn } from "#/lib/utils";
 
-type ThemeMode = "light" | "dark" | "auto"
+type ThemeMode = "light" | "dark" | "auto";
 
 type ThemeToggleProps = {
-	className?: string
-}
+	className?: string;
+};
 
 function resolveTheme(mode: ThemeMode): "light" | "dark" {
 	if (mode === "auto") {
-		return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+		return window.matchMedia("(prefers-color-scheme: dark)").matches
+			? "dark"
+			: "light";
 	}
-	return mode
+
+	return mode;
 }
 
 function applyThemeMode(mode: ThemeMode) {
-	const resolved = resolveTheme(mode)
-	document.documentElement.classList.remove("light", "dark")
-	document.documentElement.classList.add(resolved)
+	const resolved = resolveTheme(mode);
+
+	document.documentElement.classList.remove("light", "dark");
+	document.documentElement.classList.add(resolved);
+
 	if (mode === "auto") {
-		document.documentElement.removeAttribute("data-theme")
+		document.documentElement.removeAttribute("data-theme");
 	} else {
-		document.documentElement.setAttribute("data-theme", mode)
+		document.documentElement.setAttribute("data-theme", mode);
 	}
-	document.documentElement.style.colorScheme = resolved
+
+	document.documentElement.style.colorScheme = resolved;
 }
 
 function getInitialMode(): ThemeMode {
 	if (typeof window === "undefined") {
-		return "auto"
+		return "auto";
 	}
-	const stored = window.localStorage.getItem("theme")
+
+	const stored = window.localStorage.getItem("theme");
 	if (stored === "light" || stored === "dark" || stored === "auto") {
-		return stored
+		return stored;
 	}
-	return "auto"
+
+	return "auto";
 }
 
-const modeCycle: ThemeMode[] = ["light", "dark", "auto"]
-
 export default function ThemeToggle({ className }: ThemeToggleProps) {
-	const [mode, setMode] = useState<ThemeMode>("auto")
-	const [isBouncing, setIsBouncing] = useState(false)
+	const [mode, setMode] = useState<ThemeMode>("auto");
+	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
-		const initial = getInitialMode()
-		setMode(initial)
-		applyThemeMode(initial)
+		const initialMode = getInitialMode();
+		setMode(initialMode);
+		setMounted(true);
+	}, []);
 
-		const media = window.matchMedia("(prefers-color-scheme: dark)")
-		const handler = () => {
-			if (window.localStorage.getItem("theme") === "auto") {
-				applyThemeMode("auto")
-			}
+	useEffect(() => {
+		if (!mounted) {
+			return;
 		}
-		media.addEventListener("change", handler)
-		return () => media.removeEventListener("change", handler)
-	}, [])
 
-	function toggleMode() {
-		const index = modeCycle.indexOf(mode)
-		const nextMode = modeCycle[(index + 1) % modeCycle.length]
-		setMode(nextMode)
-		window.localStorage.setItem("theme", nextMode)
-		applyThemeMode(nextMode)
+		applyThemeMode(mode);
+		window.localStorage.setItem("theme", mode);
 
-		setIsBouncing(true)
-		window.setTimeout(() => setIsBouncing(false), 380)
-	}
+		const media = window.matchMedia("(prefers-color-scheme: dark)");
+		const handlePreferenceChange = () => {
+			if (window.localStorage.getItem("theme") === "auto") {
+				applyThemeMode("auto");
+			}
+		};
+
+		media.addEventListener("change", handlePreferenceChange);
+		return () => media.removeEventListener("change", handlePreferenceChange);
+	}, [mode, mounted]);
 
 	const label = useMemo(() => {
-		if (mode === "light") return "Theme: Light mode. Click to switch to Dark mode."
-		if (mode === "dark") return "Theme: Dark mode. Click to switch to Auto mode."
-		return "Theme: Auto mode. Click to switch to Light mode."
-	}, [mode])
+		if (!mounted || mode === "auto") return "Theme: System";
+		if (mode === "light") return "Theme: Light";
+		return "Theme: Dark";
+	}, [mode, mounted]);
+
+	const icon =
+		!mounted || mode === "auto" ? (
+			<Monitor className="size-4" />
+		) : mode === "light" ? (
+			<Sun className="size-4" />
+		) : (
+			<Moon className="size-4" />
+		);
 
 	return (
-		<button
-			type="button"
-			onClick={toggleMode}
-			aria-label={label}
-			title={label}
-			className={`theme-morph-toggle ${className ?? ""} ${isBouncing ? "is-bouncing" : ""}`}
-		>
-			<span className={`theme-icon theme-icon--sun ${mode === "light" ? "is-on" : ""}`} aria-hidden="true">
-				☀
-			</span>
-			<span className={`theme-icon theme-icon--moon ${mode === "dark" ? "is-on" : ""}`} aria-hidden="true">
-				☾
-			</span>
-			<span className={`theme-icon theme-icon--auto ${mode === "auto" ? "is-on" : ""}`} aria-hidden="true">
-				◐
-			</span>
-		</button>
-	)
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button
+					variant="outline"
+					size="icon"
+					className={cn(className)}
+					aria-label={label}
+				>
+					{icon}
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				<DropdownMenuLabel>Theme</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<DropdownMenuRadioGroup
+					value={mode}
+					onValueChange={(value) => setMode(value as ThemeMode)}
+				>
+					<DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
+					<DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
+					<DropdownMenuRadioItem value="auto">System</DropdownMenuRadioItem>
+				</DropdownMenuRadioGroup>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
 }
