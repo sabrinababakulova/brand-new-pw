@@ -7,6 +7,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import CatBackgroundLayer from '../components/cats/CatBackgroundLayer'
 
 import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
 
@@ -70,9 +71,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(17,17,17,0.18)]">
         <TanStackQueryProvider>
-          <Header />
-          {children}
-          <Footer />
+          <div className="portfolio-layout">
+            <CatBackgroundLayer />
+            <div className="portfolio-foreground">
+              <Header />
+              {children}
+              <Footer />
+            </div>
+          </div>
           <TanStackDevtools
             config={{
               position: 'bottom-right',

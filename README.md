@@ -9,6 +9,43 @@ bun install
 bun --bun run dev
 ```
 
+## Portfolio cat modes
+
+The normal command shows the Blender **outline animation**, with transparent
+interiors, in the two existing side lanes:
+
+```bash
+bun run dev
+```
+
+The existing Three.js option is still available with its flag:
+
+```bash
+bun run dev:cats
+# Equivalent startup flag:
+VITE_CAT_MODE=threejs bun run dev
+```
+
+To turn the Three.js flag off, stop `dev:cats` and run `bun run dev`. If you have
+exported `VITE_CAT_MODE` in your shell, unset it first. Restart the server when
+changing modes. The future GLB remains available explicitly with
+`VITE_CAT_MODE=glb bun run dev` and an asset at `public/models/cat.glb`.
+
+For a production build with the Three.js cat, use `bun run build:cats`. The flag
+is compiled into the website at build time; changing it only during preview does
+not change an already-built site. `bun run build` uses the Blender outline mode.
+
+The Blender mode uses transparent WebP loops in `public/cats/`, with a nine-frame
+offset between the cats. It does not load Three.js, a GLB, or photographer flashes.
+It shows static PNGs on mobile, with reduced motion, or when hidden/offscreen;
+mobile uses only the right lane. Black linework becomes white in dark mode.
+Asset paths are in `BLENDER_CAT_LANES` in `src/components/cats/cat-config.ts`;
+placement, scale and inward fading are in the `.cat-lane--blender` and
+`.cat-blender-image` rules in `src/styles.css`.
+
+The optional Three.js/GLB modes retain skeletal playback and photographer flashes.
+Their settings and GLB requirements are in [the cat guide](public/models/README.md).
+
 # Building For Production
 
 To build this application for production:
@@ -22,8 +59,10 @@ bun --bun run build
 This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
 
 ```bash
-bun --bun run test
+bun run test
 ```
+
+Use this command without `--bun` so Vitest uses its Node runner and module mocks.
 
 ## Styling
 
