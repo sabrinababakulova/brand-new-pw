@@ -5,7 +5,7 @@ html{min-width:320px;background:#f8edf9}
 body{margin:0;touch-action:pan-y pinch-zoom;font-family:'Space Grotesk',Arial,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 90% 25%,#dfc3f8 0%,transparent 60%),radial-gradient(ellipse at 65% 85%,#ffcce6,transparent 60%),#f8edf9}
 #flow,.shade{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 #flow{z-index:0}
-.shade{z-index:1;background:linear-gradient(90deg,rgba(248,237,249,.86),rgba(248,237,249,.28) 52%,transparent 82%)}
+.shade{z-index:1;background:linear-gradient(90deg,rgba(248,237,249,.48),rgba(248,237,249,.18) 52%,rgba(248,237,249,.08))}
 .frame{position:relative;z-index:2;min-height:100svh;max-width:1600px;margin:auto;padding:40px 7vw 32px;display:flex;flex-direction:column}
 main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0 64px}
 h1{font-size:clamp(145px,24vw,345px);line-height:.95;font-weight:700;letter-spacing:-.085em;margin:0 0 34px -.025em;color:#4e2a68}

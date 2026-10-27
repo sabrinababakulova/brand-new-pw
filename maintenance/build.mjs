@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 // Only explicit public assets are packaged; never copy server configs or reports.
 const root = dirname(fileURLToPath(import.meta.url));
 const output = join(root, '.site');
-const sourceAssets = ['bubblegum.css', 'fonts.css', 'favicon.svg', 'bubblegum-contact.js', 'gum-contact.js'];
+const sourceAssets = ['bubblegum.css', 'fonts.css', 'favicon.svg', 'bubblegum-contact.js', 'gum-contact.js', 'gum-layout.js'];
 const vendorAssets = ['three.module.min.js', 'three.core.min.js', 'space-medium.ttf', 'space-bold.ttf', 'three-LICENSE.txt', 'SpaceGrotesk-OFL.txt'];
 const copies = [
   ['index.html', 'index.html'],

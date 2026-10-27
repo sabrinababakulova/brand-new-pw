@@ -1,5 +1,6 @@
 import * as THREE from '/_wip/three.module.min.js';
 import { deformContact, followContact, contactTarget, createContactMaterial, signedVolume } from '/_wip/gum-contact.js';
+import { getBubbleLayout } from '/_wip/gum-layout.js';
 
 const canvas = document.querySelector('#flow');
 const motionButton = document.querySelector('#motion');
@@ -126,7 +127,12 @@ try {
     release();
     const aspect=innerWidth/innerHeight;
     camera.left=-3*aspect;camera.right=3*aspect;camera.updateProjectionMatrix();
-    group.position.x=innerWidth<700?-.2:aspect*.65;group.scale.setScalar(innerWidth<700?.77:1);
+    const layout=getBubbleLayout(innerWidth,innerHeight,definitions);
+    group.position.x=layout.groupX;group.scale.setScalar(layout.groupScale);
+    bubbles.forEach((bubble,id)=>{
+      bubble.mesh.position.set(...layout.transforms[id].position);
+      bubble.mesh.scale.setScalar(layout.transforms[id].scale);
+    });
     renderer.setSize(innerWidth,innerHeight);renderNeeded=true;draw();
   }
   function frame(now){

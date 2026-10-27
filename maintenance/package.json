@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node --test gum-contact.test.js gum-material.test.js gum-physics.test.js",
+    "test": "node --test gum-contact.test.js gum-material.test.js gum-layout.test.js gum-physics.test.js",
     "serve": "python3 -m http.server 8080 --bind 127.0.0.1 --directory .site"
   }
 }

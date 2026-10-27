@@ -39,7 +39,7 @@ but only the current contact-pull design is packaged.
 
 ## Update the placeholder
 
-Copy `bubblegum.css`, `bubblegum-contact.js`, `gum-contact.js`, `favicon.svg`, and
+Copy `bubblegum.css`, `bubblegum-contact.js`, `gum-contact.js`, `gum-layout.js`, `favicon.svg`, and
 `fonts.css` to `/var/www/sabrina-wip/_wip/`, then deploy `index.html` last.
 The earlier `style.css`/`scene.js` and `bubblegum.js`/`gum-physics.js` designs are
 preserved but no longer loaded. The current Three.js scene uses fixed-center,
@@ -50,7 +50,11 @@ motion when the body is focused. No app build or restart is needed.
 
 ## Contact interaction and acceptance tests
 
-The scene contains 12 bubbles. A cursor contact locks one material patch; the
+The scene contains 12 bubbles. Desktop anchors span the entire viewport, with
+bubbles in the left, center and right thirds even on ultrawide screens. The phone
+composition and gentle material behavior are preserved. Layout is defined in
+`gum-layout.js`; desktop positions are viewport-relative, not a right-shifted group.
+A cursor contact locks one material patch; the
 bubble's center and opposite cap stay anchored. Hover motion is intentionally
 weak (16% input gain, capped at 0.12 radius), and pressing is only slightly firmer
 (24% input gain, capped at 0.22 radius). A smooth saturation curve adds resistance

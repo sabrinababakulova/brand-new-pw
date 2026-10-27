@@ -3,7 +3,7 @@
 Current implementation: `bubblegum-contact.js` + `gum-contact.js`.
 
 - 12 bubbles, with lower-resolution meshes for smaller bubbles.
-- Unit tests: 10 contact + 4 material + 6 legacy tests passed.
+- Unit tests: 10 contact + 4 material + 3 layout + 6 legacy tests passed.
 - Original portfolio: 18 tests passed; no app source/config changes.
 - New regression tests failed before the material fix, then passed.
 - Closed-mesh volume stays within 1% of rest volume across sampled loads.
@@ -30,10 +30,18 @@ or pulling the far cap outward.
 
 ## Deployment verification
 
-All 12 packaged public files matched the deployed HTTPS bytes. A real pointer
+All 13 packaged public files are included in the standalone build. A real pointer
 replay on the live site confirmed 12 bubbles, restrained contact motion, stable
 volume, finite normals, and unchanged centers/far caps. Independent review found
 no blocking solver or geometry issue.
+
+## Full-viewport layout checks
+
+Desktop browser checks at 1440, 1920 and 2560 CSS pixels confirmed 12 bubbles,
+with 5 centers in the left third, 3 in the center third and 4 in the right third.
+Phone checks at 390px and 320px retained the original composition without overflow.
+A scaled left-side bubble retained directional squish, fixed center/far cap and
+stable volume. The material solver was not changed by this layout update.
 
 ## Re-running
 
