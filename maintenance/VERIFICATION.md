@@ -1,32 +1,46 @@
-# Bubblegum interaction verification
+# Twelve-bubble material verification
 
-The active implementation is `bubblegum-contact.js` + `gum-contact.js`.
+Current implementation: `bubblegum-contact.js` + `gum-contact.js`.
 
-- Current contact unit suite: 10 passed. Legacy suite: 6 passed.
-- Browser directional tests: 4/4 passed (right, left, up, down).
-- Same-patch reversal and off-sphere checks: 3/3 passed.
-- Fixed mesh positions and untouched opposite vertices verified.
-- Release magnitude decreased monotonically to rest.
-- Real touch movement, social SVG event pass-through, and reduced-motion suppression passed.
-- Live HTTPS assets matched tested local source byte-for-byte.
-- Live site pointer replay passed after deployment.
+- 12 bubbles, with lower-resolution meshes for smaller bubbles.
+- Unit tests: 10 contact + 4 material + 6 legacy tests passed.
+- Original portfolio: 18 tests passed; no app source/config changes.
+- New regression tests failed before the material fix, then passed.
+- Closed-mesh volume stays within 1% of rest volume across sampled loads.
+- Sampled mesh triangles do not fold; all tested coordinates/normals stay finite.
+- Browser directional tests: 4/4 passed with fixed centers and far caps.
+- Hover is weaker than pressing; pull is capped and releases monotonically.
+- Real phone touch, reduced motion, and all five social icons passed.
+- 320px and 390px layouts have no horizontal overflow.
 
-## Directional measurements
+## Browser measurements (isolated preview)
 
-| Direction | Contact-to-cursor error (CSS px) | Opposite cap displacement | Center fixed |
-|---|---:|---:|---|
-| right | 6.24 | 0 | True |
-| left | 5.74 | 0 | True |
-| up | 6.81 | 0 | True |
-| down | 6.92 | 0 | True |
+| Direction | Contact pull / radius | Volume change (%) | Opposite cap movement | Center fixed |
+|---|---:|---:|---:|---|
+| right | 0.0965 | 0.008 | 0 | True |
+| left | 0.1034 | 0.041 | 0 | True |
+| up | 0.0930 | 0.021 | 0 | True |
+| down | 0.0930 | 0.021 | 0 | True |
 
-## Re-running verification
+These measurements use the same 100–110 CSS-pixel gestures as the earlier
+prototype. Reduced response, rather than 1:1 cursor tracking, is intentional.
+The contact target soft-saturates at 0.12 radius for hover and 0.22 for pressing.
+A bounded shoulder correction conserves volume without translating the object
+or pulling the far cap outward.
 
-Run `npm --prefix maintenance test` for the deterministic unit suites and
-`npm --prefix maintenance run build` to package the standalone page. Browser
-measurements above record the deployment acceptance checks; they are not a
-claim of automated GitHub CI. Follow the browser checklist in `README.md` to
-repeat them on the current scene. Local agent cache paths and raw session
-artifacts are intentionally not part of this repository.
+## Deployment verification
 
-This is a localized visual elasticity model, not a fluid or material-science simulator.
+All 12 packaged public files matched the deployed HTTPS bytes. A real pointer
+replay on the live site confirmed 12 bubbles, restrained contact motion, stable
+volume, finite normals, and unchanged centers/far caps. Independent review found
+no blocking solver or geometry issue.
+
+## Re-running
+
+Run `npm --prefix maintenance test` and `npm --prefix maintenance run build`.
+Follow the acceptance checklist in README.md with the read-only `?verify-gum`
+inspector. Recorded browser measurements are not an automated GitHub CI claim.
+Private agent/session artifacts are not included in the repository.
+
+This is a stylized, approximately volume-preserving elastic surface, not a full
+material-science or fluid simulation.

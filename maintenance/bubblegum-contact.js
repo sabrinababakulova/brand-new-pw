@@ -1,5 +1,5 @@
 import * as THREE from '/_wip/three.module.min.js';
-import { deformContact, followContact } from '/_wip/gum-contact.js';
+import { deformContact, followContact, contactTarget, createContactMaterial, signedVolume } from '/_wip/gum-contact.js';
 
 const canvas = document.querySelector('#flow');
 const motionButton = document.querySelector('#motion');
@@ -37,10 +37,13 @@ try {
   const definitions=[
     [1,.45,-.7,1.55,0xf4a4d5,.2],[2.25,1.95,-1.5,1.22,0xc29aef,1.7],
     [2.5,-1.55,-.2,1.38,0xeab1ee,3.4],[-.05,-1.6,-1.4,.77,0xd88ed3,4.6],
-    [3.5,.15,-1.7,.8,0xf5b7d5,5.5],[.15,2.45,-2,.46,0xe8b1f4,2.5]
+    [3.5,.15,-1.7,.8,0xf5b7d5,5.5],[.15,2.45,-2,.46,0xe8b1f4,2.5],
+    [-.75,1.55,-2.4,.56,0xf3c1e5,.9],[3.45,1.65,-2.7,.45,0xd7b3ef,3.1],
+    [0,-2.75,-2.2,.46,0xe1b8f3,1.2],[1.3,2.82,-2.6,.38,0xf6c2db,4.2],
+    [-.95,-.3,-2.7,.35,0xd7b8f2,2.1],[3.25,-2.65,-2.5,.52,0xf3bbdf,5.2]
   ];
   const bubbles=definitions.map(([x,y,z,radius,color,phase],id)=>{
-    const geometry=new THREE.SphereGeometry(radius,48,32), positions=geometry.attributes.position;
+    const geometry=new THREE.SphereGeometry(radius,radius>=.7?48:32,radius>=.7?32:24), positions=geometry.attributes.position;
     for(let i=0;i<positions.count;i++){
       const px=positions.getX(i),py=positions.getY(i),pz=positions.getZ(i);
       const d=1+.055*Math.sin(py*2.1+phase)*Math.cos(px*1.7+pz);
@@ -49,14 +52,13 @@ try {
     geometry.computeVertexNormals();positions.setUsage(THREE.DynamicDrawUsage);
     const material=new THREE.MeshPhysicalMaterial({color,roughness:.19,metalness:.05,clearcoat:1,clearcoatRoughness:.1,sheen:.4,sheenColor:new THREE.Color(0xffd4ed),iridescence:.22,iridescenceIOR:1.3,envMapIntensity:.85});
     const mesh=new THREE.Mesh(geometry,material);mesh.position.set(x,y,z);group.add(mesh);
-    return {id,mesh,radius,base:new Float32Array(positions.array),contact:new THREE.Vector3(radius,0,0),contactIndex:0,pull:new THREE.Vector3(),goal:new THREE.Vector3(),lastPull:new THREE.Vector3(),dirty:false};
+    const base=new Float32Array(positions.array),contact=new THREE.Vector3(radius,0,0);
+    return {id,mesh,radius,base,contact,elastic:createContactMaterial(base,geometry.index.array,contact,radius),contactIndex:0,pull:new THREE.Vector3(),goal:new THREE.Vector3(),lastPull:new THREE.Vector3(),dirty:false};
   });
   const meshes=bubbles.map(b=>b.mesh), byMesh=new Map(bubbles.map(b=>[b.mesh,b]));
   const raycaster=new THREE.Raycaster(), ndc=new THREE.Vector2();
   const plane=new THREE.Plane(new THREE.Vector3(0,0,1),0), scratch=new THREE.Vector3();
-  const normal=new THREE.Vector3();
   let active=null,renderNeeded=true;
-  const zero=new THREE.Vector3();
   function allowed(e){return !paused && !e.target.closest?.('a,button,input,textarea,select');}
   function ray(e){ndc.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);raycaster.setFromCamera(ndc,camera);}
   function cursorOnContactPlane(e,bubble){
@@ -85,10 +87,12 @@ try {
       }
       bubble.contactIndex=nearest;
       bubble.contact.fromArray(bubble.base,nearest*3);
+      bubble.elastic=createContactMaterial(bubble.base,bubble.mesh.geometry.index.array,bubble.contact,bubble.radius);
+      bubble.dirty=true;
     }
     const point=cursorOnContactPlane(e,bubble);
     if(!point)return false;
-    active={bubble,pointerId:e.pointerId,pressed,origin:point.clone().sub(bubble.pull),pointerType:e.pointerType};
+    active={bubble,pointerId:e.pointerId,pressed,origin:point.clone(),pointerType:e.pointerType};
     updateContact(e);
     return true;
   }
@@ -99,22 +103,18 @@ try {
     if(!point)return;
     const delta=point.clone().sub(origin);
     // Leaving the contact neighbourhood releases the skin, never drags the object.
-    if(!pressed && delta.length()>bubble.radius*1.45){release();return;}
-    delta.z-=bubble.radius*(pressed?.09:.035);
-    normal.copy(bubble.contact).normalize();
-    const inward=delta.dot(normal), minInward=-bubble.radius*.28;
-    if(inward<minInward)delta.addScaledVector(normal,minInward-inward);
-    delta.clampLength(0,bubble.radius*1.05);
-    bubble.goal.copy(delta);
+    if(!pressed && delta.length()>bubble.radius*.8){release();return;}
+    const target=contactTarget(delta,bubble.radius,bubble.contact,pressed);
+    bubble.goal.set(target.x,target.y,target.z);
   }
   function draw(dt=0){
     for(const bubble of bubbles){
       const {mesh,pull,goal,lastPull,base}=bubble;
-      if(dt)followContact(pull,goal,dt,active?.bubble===bubble?16:9);
+      if(dt)followContact(pull,goal,dt,active?.bubble===bubble?12:10);
       if(pull.length()<.00005 && goal.lengthSq()===0)pull.set(0,0,0);
       if(pull.distanceToSquared(lastPull)>.0000000025 || bubble.dirty){
         const p=mesh.geometry.attributes.position;
-        deformContact(base,p.array,bubble.contact,pull,bubble.radius);
+        deformContact(base,p.array,bubble.contact,pull,bubble.radius,bubble.elastic);
         p.needsUpdate=true;mesh.geometry.computeVertexNormals();mesh.geometry.computeBoundingSphere();
         lastPull.copy(pull);bubble.dirty=false;
         renderNeeded=true;
@@ -170,7 +170,7 @@ try {
         const restPoint=new THREE.Vector3().fromArray(b.base,i*3);
         if(restPoint.clone().normalize().dot(b.contact.clone().normalize())<-.8)back=Math.max(back,displacement);
       }
-      return {id:b.id,radius:b.radius,center:b.mesh.position.toArray(),pull:b.pull.toArray(),goal:b.goal.toArray(),contact:b.contact.toArray(),contactDisplacement:current.sub(rest).toArray(),contactScreen:[(screen.x+1)*innerWidth/2,(1-screen.y)*innerHeight/2],maxDeformation:maximum,backDeformation:back};
+      return {id:b.id,radius:b.radius,center:b.mesh.position.toArray(),pull:b.pull.toArray(),goal:b.goal.toArray(),contact:b.contact.toArray(),contactDisplacement:current.sub(rest).toArray(),contactScreen:[(screen.x+1)*innerWidth/2,(1-screen.y)*innerHeight/2],maxDeformation:maximum,backDeformation:back,volumeRatio:signedVolume(p.array,b.mesh.geometry.index.array)/b.elastic.restVolume,normalsFinite:Array.from(b.mesh.geometry.attributes.normal.array).every(Number.isFinite)};
     })})};
   }
   resize();start();

@@ -50,27 +50,35 @@ motion when the body is focused. No app build or restart is needed.
 
 ## Contact interaction and acceptance tests
 
-The implementation locks one material surface patch when the cursor first touches
-a bubble. That patch follows cursor displacement in mesh-local space on a fixed
-camera-facing plane. A compact spatial kernel pulls the contacted cap and gently
-pinches its sides; the opposite cap and object transform remain unchanged. There
-is no axis scaling, mirrored inflation, whole-object drag, or repeated reanchoring.
-Pulls are bounded, and exponential viscous following uses real elapsed time rather
-than impulses or an underdamped spring. Release monotonically restores base vertices.
-Normals and bounds are updated from the deformed positions. Static frames do not
-rerender. Horizontal touch pulls work while vertical scrolling/pinch remain native.
+The scene contains 12 bubbles. A cursor contact locks one material patch; the
+bubble's center and opposite cap stay anchored. Hover motion is intentionally
+weak (16% input gain, capped at 0.12 radius), and pressing is only slightly firmer
+(24% input gain, capped at 0.22 radius). A smooth saturation curve adds resistance
+as the pull gets longer. Pressure acts inward along the rest-position radial
+normal approximation, rather than always pushing along the camera axis. Moving
+away without pressing releases the contact.
 
-Run `node --test maintenance/gum-contact.test.js maintenance/gum-physics.test.js`.
-The contact suite is the current behavior; the physics suite preserves legacy tests.
-For browser acceptance, serve an isolated copy first. Append `?verify-gum` to enable
-read-only `window.__gumInspector.snapshot()` geometry measurements. Use real CDP
-pointer events rather than mutating test state. Verify all four pull directions,
-same-patch reversal, off-sphere bounded pulls, fixed centers, untouched opposite
-vertices, monotonic release, touch movement, links, and reduced motion. Confirm
-contact-to-cursor error stays within the mesh sampling tolerance (14 CSS px for the
-desktop test). Preserve JSON test results and compare rest/pulled screenshots.
+The mesh uses a local shoulder correction to approximately preserve its original
+closed volume while leaving the contact tip and far cap unchanged. It does not
+inflate to make a stretched tail. Unit tests require volume error under 1%, finite
+coordinates and no folded triangles across sampled contact directions. This is a
+bounded visual elasticity model, not a full material-science simulation.
+
+Exponential viscous following uses real elapsed time, not impulse kicks. Release
+monotonically restores base vertices. Normals and bounds update after deformation;
+static frames do not rerender. Smaller bubbles use fewer mesh segments. Horizontal
+touch gestures remain usable alongside native vertical scrolling and pinch zoom.
+
+Run `npm --prefix maintenance test` (current contact/material suites plus legacy
+physics tests). For browser acceptance, serve an isolated build and append
+`?verify-gum` for read-only `window.__gumInspector.snapshot()` measurements. Use
+actual pointer events. Verify 12 bubbles, directional response/reversal, hover
+weaker than press, capped strain, volumeRatio within 1% of 1, finite normals, fixed
+centers, unchanged far cap, monotonic release, touch, links and reduced motion.
+Do not require 1:1 cursor tracking: the reduced response is intentional.
+Preserve JSON measurements and compare desktop/mobile screenshots.
 Ignore social links/controls and release on pointercancel, blur, resize, visibility
-loss, and reduced-motion changes. Keep the original portfolio and TLS gate intact.
+loss and reduced-motion changes. Keep the original portfolio and TLS gate intact.
 
 ## Restore the original portfolio
 
