@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 const layout=await import('./gum-layout.js').catch(()=>({}));
-const definitions=Array.from({length:12},(_,id)=>[id*.2,.45-id*.1,-id*.2,.5,0xffffff,0]);
+const definitions=Array.from({length:24},(_,id)=>[id*.2,.45-id*.1,-id*.2,.5,0xffffff,0]);
 
 test('desktop bubble centers cover the left, center, and right thirds at wide sizes',()=>{
   assert.equal(typeof layout.getBubbleLayout,'function','full-viewport desktop layout must exist');
   for(const [width,height]of [[1024,768],[1440,1000],[1920,1080],[2560,1080]]){
     const result=layout.getBubbleLayout(width,height,definitions);
     const thirds=[0,0,0];const aspect=width/height;
-    assert.equal(result.transforms.length,12);assert.equal(result.groupX,0);
+    assert.equal(result.transforms.length,24);assert.equal(result.groupX,0);
     for(const item of result.transforms){
       const u=(item.position[0]+3*aspect)/(6*aspect);
       assert.ok(u>=0&&u<=1);thirds[Math.min(2,Math.floor(u*3))]++;

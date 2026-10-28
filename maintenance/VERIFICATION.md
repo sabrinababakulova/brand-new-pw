@@ -43,6 +43,15 @@ Phone checks at 390px and 320px retained the original composition without overfl
 A scaled left-side bubble retained directional squish, fixed center/far cap and
 stable volume. The material solver was not changed by this layout update.
 
+## 24-bubble density update
+
+The scene now contains 24 bubbles, with desktop centers distributed 9/8/7 across
+the left/center/right thirds. Existing bubble positions and material settings are
+unchanged; smaller foreground bubbles add density without intersecting the large
+bubble surfaces. Browser checks at 320x740, 390x844, 1440x1000 and 2560x1080
+confirmed all 24 meshes, finite normals and no horizontal overflow. All five
+social links remain visible on both phone sizes. All 23 standalone tests pass.
+
 ## Re-running
 
 Run `npm --prefix maintenance test` and `npm --prefix maintenance run build`.

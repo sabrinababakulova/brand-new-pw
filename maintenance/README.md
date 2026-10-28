@@ -50,9 +50,10 @@ motion when the body is focused. No app build or restart is needed.
 
 ## Contact interaction and acceptance tests
 
-The scene contains 12 bubbles. Desktop anchors span the entire viewport, with
-bubbles in the left, center and right thirds even on ultrawide screens. The phone
-composition and gentle material behavior are preserved. Layout is defined in
+The scene contains 24 bubbles. Desktop anchors span the entire viewport, with
+bubbles in the left, center and right thirds even on ultrawide screens. The original
+phone positions and gentle material behavior are preserved, with smaller bubbles
+added around them. Layout is defined in
 `gum-layout.js`; desktop positions are viewport-relative, not a right-shifted group.
 A cursor contact locks one material patch; the
 bubble's center and opposite cap stay anchored. Hover motion is intentionally
