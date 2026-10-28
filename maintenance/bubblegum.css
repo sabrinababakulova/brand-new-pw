@@ -1,8 +1,8 @@
 @import url('/_wip/fonts.css');
 :root{color-scheme:light;--ink:#40254f;--pink:#b82b7b;--muted:#775e83}
 *{box-sizing:border-box}
-::selection{background:#c56b9e;color:#fff0f7;text-shadow:none}
-::-moz-selection{background:#c56b9e;color:#fff0f7;text-shadow:none}
+::selection{background:rgba(197,107,158,.4);color:#c52f83;text-shadow:none}
+::-moz-selection{background:rgba(197,107,158,.4);color:#c52f83;text-shadow:none}
 html{min-width:320px;background:#f8edf9}
 body{margin:0;touch-action:pan-y pinch-zoom;font-family:'Space Grotesk',Arial,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 90% 25%,#dfc3f8 0%,transparent 60%),radial-gradient(ellipse at 65% 85%,#ffcce6,transparent 60%),#f8edf9}
 #flow,.shade{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
