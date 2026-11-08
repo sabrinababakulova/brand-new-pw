@@ -1,6 +1,8 @@
-# Twelve-bubble material verification
+# Bubblegum scene verification
 
-Current implementation: `bubblegum-contact.js` + `gum-contact.js`.
+Current implementation: `bubblegum-contact.js`, `gum-contact.js`, `gum-layout.js`
+and `gum-idle.js`. The 12-bubble results below are the historical solver baseline;
+the current scene has 24 bubbles, with the idle update recorded separately below.
 
 - 12 bubbles, with lower-resolution meshes for smaller bubbles.
 - Unit tests: 10 contact + 4 material + 3 layout + 6 legacy tests passed.
@@ -51,6 +53,40 @@ unchanged; smaller foreground bubbles add density without intersecting the large
 bubble surfaces. Browser checks at 320x740, 390x844, 1440x1000 and 2560x1080
 confirmed all 24 meshes, finite normals and no horizontal overflow. All five
 social links remain visible on both phone sizes. All 23 standalone tests pass.
+
+## Slow idle float
+
+The new idle module adds bounded, phase-offset XY movement to each bubble, without
+changing its geometry, depth or rotation. Centers freeze during contact and skin
+recovery; unrelated bubbles continue floating. The contact solver is unchanged.
+
+- 29 standalone tests and 18 original-portfolio tests pass.
+- Six idle tests cover hold/release continuity, disabled motion, invalid dt,
+  bounded speed/range, independent phases and frame-rate independence.
+- Initial idle, pause and invalid-dt regressions failed before their implementations.
+- Standalone packaging includes the new module: 14 explicit public files.
+- Preview at 1440x1000: all 24 unhandled bubbles changed position; no overflow.
+- A real 75px press gesture kept the center fixed while deforming the skin:
+  maximum strain 0.074865 radius, volume ratio 1.000220, far-cap displacement 0.
+- The handled bubble resumed floating after release and elastic recovery.
+- Space paused every center and resumed the same phase; reduced motion froze all
+  bubbles, could not be overridden by Resume, and was static on a fresh load.
+- Phone previews at 320x740 and 390x844: all 24 idle transforms advanced, no
+  horizontal overflow, all five social controls visible and real clicks passed.
+- Real touch input froze the contacted bubble and released normally.
+- Ultrawide 2560x1080: all 24 moved, with centers distributed 9/8/7 across thirds.
+- A background browser tab held idle clocks at zero until brought to the foreground.
+
+The deployed HTTPS scene was also checked with real pointer input: all 24 bubbles
+float on desktop and a 320px phone viewport, contact centers and far caps remain
+fixed while the skin stretches, and pause/reduced-motion controls stop movement.
+All five phone links remain visible and no JavaScript errors were recorded. Every
+one of the 14 deployed public files matched the clean build byte-for-byte; the
+apex, www host and gated deep link returned HTTP 200 with no-store caching.
+
+The preview shader compiler exceeded a browser helper's short default timeout on
+one reload; retrying with a longer CDP response timeout verified the loaded scene.
+This is not a claim about frame rate on visitors' devices.
 
 ## Re-running
 

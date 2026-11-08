@@ -39,10 +39,10 @@ but only the current contact-pull design is packaged.
 
 ## Update the placeholder
 
-Copy `bubblegum.css`, `bubblegum-contact.js`, `gum-contact.js`, `gum-layout.js`, `favicon.svg`, and
+Copy `bubblegum.css`, `bubblegum-contact.js`, `gum-contact.js`, `gum-layout.js`, `gum-idle.js`, `favicon.svg`, and
 `fonts.css` to `/var/www/sabrina-wip/_wip/`, then deploy `index.html` last.
 The earlier `style.css`/`scene.js` and `bubblegum.js`/`gum-physics.js` designs are
-preserved but no longer loaded. The current Three.js scene uses fixed-center,
+preserved but no longer loaded. The current Three.js scene uses gently floating,
 physical-material spheres, a procedural studio environment, and a light pink/purple
 palette. Social icons have accessible names; Telegram opens the channel. The motion
 control is keyboard-focusable but visually hidden until focused; Space also toggles
@@ -56,7 +56,8 @@ phone positions and gentle material behavior are preserved, with smaller bubbles
 added around them. Layout is defined in
 `gum-layout.js`; desktop positions are viewport-relative, not a right-shifted group.
 A cursor contact locks one material patch; the
-bubble's center and opposite cap stay anchored. Hover motion is intentionally
+bubble's center freezes at its current floating position through contact and
+elastic recovery; the opposite cap stays anchored relative to that center. Hover motion is intentionally
 weak (16% input gain, capped at 0.12 radius), and pressing is only slightly firmer
 (24% input gain, capped at 0.22 radius). A smooth saturation curve adds resistance
 as the pull gets longer. Pressure acts inward along the rest-position radial
@@ -71,17 +72,32 @@ bounded visual elasticity model, not a full material-science simulation.
 
 Exponential viscous following uses real elapsed time, not impulse kicks. Release
 monotonically restores base vertices. Normals and bounds update after deformation;
-static frames do not rerender. Smaller bubbles use fewer mesh segments. Horizontal
+geometry only updates during contact changes. Smaller bubbles use fewer mesh segments. Horizontal
 touch gestures remain usable alongside native vertical scrolling and pinch zoom.
+
+Idle motion is defined in `gum-idle.js`. Each bubble follows its own slow XY path,
+with roughly 27–33 second horizontal and 35–38 second vertical periods. Offset is
+bounded to 15% of its radius, with no rotation, depth movement, scaling or changes
+to the surface solver. A bubble's clock stops during contact and while the skin
+returns to rest, so it never slides under the pointer or snaps back on release.
+Pause, reduced-motion preference and hidden tabs stop the animation; resuming
+continues the existing phase without catching up on elapsed wall-clock time.
+An enabled idle scene renders at the existing capped frame cadence; idle frames
+do not rebuild geometry or normals. Reduced motion cannot be overridden by Resume.
 
 Run `npm --prefix maintenance test` (current contact/material suites plus legacy
 physics tests). For browser acceptance, serve an isolated build and append
 `?verify-gum` for read-only `window.__gumInspector.snapshot()` measurements. Use
-actual pointer events. Verify 12 bubbles, directional response/reversal, hover
+actual pointer events. Verify 24 bubbles, directional response/reversal, hover
 weaker than press, capped strain, volumeRatio within 1% of 1, finite normals, fixed
 centers, unchanged far cap, monotonic release, touch, links and reduced motion.
 Do not require 1:1 cursor tracking: the reduced response is intentional.
 Preserve JSON measurements and compare desktop/mobile screenshots.
+Compare idle snapshots several seconds apart: all unhandled bubbles should move
+slowly near their layout anchors. Freeze tests must compare each handled bubble's
+center to its position at contact start, not to the original layout anchor. Also
+check that unrelated bubbles keep floating, pause/reduced motion freeze all
+centers, and release eventually resumes from the held position without a jump.
 Ignore social links/controls and release on pointercancel, blur, resize, visibility
 loss and reduced-motion changes. Keep the original portfolio and TLS gate intact.
 

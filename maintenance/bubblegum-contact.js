@@ -1,6 +1,7 @@
 import * as THREE from '/_wip/three.module.min.js';
 import { deformContact, followContact, contactTarget, createContactMaterial, signedVolume } from '/_wip/gum-contact.js';
 import { getBubbleLayout } from '/_wip/gum-layout.js';
+import { createIdleMotion, stepIdleMotion } from '/_wip/gum-idle.js';
 
 const canvas = document.querySelector('#flow');
 const motionButton = document.querySelector('#motion');
@@ -60,13 +61,13 @@ try {
     const material=new THREE.MeshPhysicalMaterial({color,roughness:.19,metalness:.05,clearcoat:1,clearcoatRoughness:.1,sheen:.4,sheenColor:new THREE.Color(0xffd4ed),iridescence:.22,iridescenceIOR:1.3,envMapIntensity:.85});
     const mesh=new THREE.Mesh(geometry,material);mesh.position.set(x,y,z);group.add(mesh);
     const base=new Float32Array(positions.array),contact=new THREE.Vector3(radius,0,0);
-    return {id,mesh,radius,base,contact,elastic:createContactMaterial(base,geometry.index.array,contact,radius),contactIndex:0,pull:new THREE.Vector3(),goal:new THREE.Vector3(),lastPull:new THREE.Vector3(),dirty:false};
+    return {id,mesh,radius,base,contact,anchor:mesh.position.clone(),idle:createIdleMotion(radius,phase),elastic:createContactMaterial(base,geometry.index.array,contact,radius),contactIndex:0,pull:new THREE.Vector3(),goal:new THREE.Vector3(),lastPull:new THREE.Vector3(),dirty:false};
   });
   const meshes=bubbles.map(b=>b.mesh), byMesh=new Map(bubbles.map(b=>[b.mesh,b]));
   const raycaster=new THREE.Raycaster(), ndc=new THREE.Vector2();
   const plane=new THREE.Plane(new THREE.Vector3(0,0,1),0), scratch=new THREE.Vector3();
   let active=null,renderNeeded=true;
-  function allowed(e){return !paused && !e.target.closest?.('a,button,input,textarea,select');}
+  function allowed(e){return !paused && !preference.matches && !e.target.closest?.('a,button,input,textarea,select');}
   function ray(e){ndc.set(e.clientX/innerWidth*2-1,1-e.clientY/innerHeight*2);raycaster.setFromCamera(ndc,camera);}
   function cursorOnContactPlane(e,bubble){
     ray(e);
@@ -119,6 +120,12 @@ try {
       const {mesh,pull,goal,lastPull,base}=bubble;
       if(dt)followContact(pull,goal,dt,active?.bubble===bubble?12:10);
       if(pull.length()<.00005 && goal.lengthSq()===0)pull.set(0,0,0);
+      // Keep the current center locked through contact AND elastic recovery.
+      if(stepIdleMotion(bubble.idle,dt,{
+        held:active?.bubble===bubble || pull.lengthSq()>0,
+        enabled:!paused && !preference.matches && !document.hidden,
+      }))renderNeeded=true;
+      mesh.position.set(bubble.anchor.x+bubble.idle.x*mesh.scale.x,bubble.anchor.y+bubble.idle.y*mesh.scale.y,bubble.anchor.z);
       if(pull.distanceToSquared(lastPull)>.0000000025 || bubble.dirty){
         const p=mesh.geometry.attributes.position;
         deformContact(base,p.array,bubble.contact,pull,bubble.radius,bubble.elastic);
@@ -136,18 +143,18 @@ try {
     const layout=getBubbleLayout(innerWidth,innerHeight,definitions);
     group.position.x=layout.groupX;group.scale.setScalar(layout.groupScale);
     bubbles.forEach((bubble,id)=>{
-      bubble.mesh.position.set(...layout.transforms[id].position);
+      bubble.anchor.set(...layout.transforms[id].position);
       bubble.mesh.scale.setScalar(layout.transforms[id].scale);
     });
     renderer.setSize(innerWidth,innerHeight);renderNeeded=true;draw();
   }
   function frame(now){
-    raf=0;if(paused||document.hidden){last=0;return;}
+    raf=0;if(paused||preference.matches||document.hidden){last=0;return;}
     if(last && now-last<30){raf=requestAnimationFrame(frame);return;}
     const dt=last?Math.min((now-last)/1000,.5):0;last=now;draw(dt);
     raf=requestAnimationFrame(frame);
   }
-  function start(){if(!raf&&!paused&&!document.hidden)raf=requestAnimationFrame(frame);}
+  function start(){if(!raf&&!paused&&!preference.matches&&!document.hidden)raf=requestAnimationFrame(frame);}
   addEventListener('pointermove',e=>{
     if(!allowed(e)){release();return;}
     if(active){updateContact(e);return;}
@@ -162,7 +169,7 @@ try {
   addEventListener('pointercancel',e=>{if(e.pointerId===active?.pointerId)release();});
   addEventListener('blur',release);document.addEventListener('pointerleave',release);
   addEventListener('resize',resize,{passive:true});
-  function setPaused(value){release();paused=value;last=0;updateMotion();start();}
+  function setPaused(value){release();paused=value||preference.matches;last=0;updateMotion();start();}
   motionButton.addEventListener('click',()=>setPaused(!paused));
   addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();setPaused(!paused);}});
   preference.addEventListener('change',e=>setPaused(e.matches));
@@ -175,6 +182,7 @@ try {
       const p=b.mesh.geometry.attributes.position,at=b.contactIndex*3;
       const current=new THREE.Vector3().fromArray(p.array,at),rest=new THREE.Vector3().fromArray(b.base,at);
       const screen=b.mesh.localToWorld(current.clone()).project(camera);
+      const centerScreen=b.mesh.getWorldPosition(new THREE.Vector3()).project(camera);
       let maximum=0,back=0;
       for(let i=0;i<p.count;i++){
         const dx=p.getX(i)-b.base[i*3],dy=p.getY(i)-b.base[i*3+1],dz=p.getZ(i)-b.base[i*3+2];
@@ -182,7 +190,7 @@ try {
         const restPoint=new THREE.Vector3().fromArray(b.base,i*3);
         if(restPoint.clone().normalize().dot(b.contact.clone().normalize())<-.8)back=Math.max(back,displacement);
       }
-      return {id:b.id,radius:b.radius,center:b.mesh.position.toArray(),pull:b.pull.toArray(),goal:b.goal.toArray(),contact:b.contact.toArray(),contactDisplacement:current.sub(rest).toArray(),contactScreen:[(screen.x+1)*innerWidth/2,(1-screen.y)*innerHeight/2],maxDeformation:maximum,backDeformation:back,volumeRatio:signedVolume(p.array,b.mesh.geometry.index.array)/b.elastic.restVolume,normalsFinite:Array.from(b.mesh.geometry.attributes.normal.array).every(Number.isFinite)};
+      return {id:b.id,radius:b.radius,scale:b.mesh.scale.x,anchor:b.anchor.toArray(),idleOffset:[b.idle.x,b.idle.y,0],idleTime:b.idle.time,center:b.mesh.position.toArray(),centerScreen:[(centerScreen.x+1)*innerWidth/2,(1-centerScreen.y)*innerHeight/2],pull:b.pull.toArray(),goal:b.goal.toArray(),contact:b.contact.toArray(),contactDisplacement:current.sub(rest).toArray(),contactScreen:[(screen.x+1)*innerWidth/2,(1-screen.y)*innerHeight/2],maxDeformation:maximum,backDeformation:back,volumeRatio:signedVolume(p.array,b.mesh.geometry.index.array)/b.elastic.restVolume,normalsFinite:Array.from(b.mesh.geometry.attributes.normal.array).every(Number.isFinite)};
     })})};
   }
   resize();start();
